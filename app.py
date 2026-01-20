@@ -7,20 +7,19 @@ app = Flask(__name__)
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-@app.route("/")
-def home():
-    return "Tracker running"
-
 @app.route("/track", methods=["POST"])
 def track():
     if "video" not in request.files:
         return jsonify({"error": "Nenhum vídeo enviado"}), 400
 
     video = request.files["video"]
+    x = int(request.form["x"])
+    y = int(request.form["y"])
+
     path = os.path.join(UPLOAD_FOLDER, video.filename)
     video.save(path)
 
-    result = analyze_video(path)
+    result = analyze_video(path, x, y)
     return jsonify(result)
 
 if __name__ == "__main__":
